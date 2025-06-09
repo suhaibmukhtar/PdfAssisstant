@@ -1,0 +1,21 @@
+
+[project]
+name = "PdfAssisstant"
+version = "0.0.1"
+authors = [
+    { name = "Suhaib Mukhtar", email = "suhaibmukhtar2@gmail.com" }
+]
+description = "The Diabetes Query Assistant is a Retrieval-Augmented Generation (RAG) application designed to provide intelligent and accurate answers to queries related to diabetes. The application focuses on topics such as diet plans, exercises, meditation, and other diabetes management strategies. By leveraging advanced AI technologies, it aims to assist users in managing and understanding diabetes effectively."
+requires-python = ">=3.7"
+readme = "README.md"
+
+[project.urls]
+Homepage = "https://github.com/suhaibmukhtar/PdfAssisstant.git"
+
+
+[tool.setuptools]
+packages = ["src"]
+
+
+[tool.setuptools.dynamic]
+dependencies = {file = "requirements.txt"}

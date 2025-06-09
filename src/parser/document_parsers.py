@@ -4,22 +4,26 @@ from langchain_community.document_loaders import UnstructuredHTMLLoader
 from langchain_community.document_loaders.word_document import Docx2txtLoader
 from pathlib import Path
 import sys
-from logger import logging
+from config import config
+from exception import CustomException
 import os
 
-PACKAGE_PATH = Path(__file__).parent
-sys.path.append(str(PACKAGE_PATH))
-
-def load_documents(data_path):
+def load_documents(DATA_PATH: str) -> list:
+    """
+    Load documents from a specified directory.
+    Args:
+        data_path (str): Path to the directory containing documents.
+    Returns:
+        list: A list of loaded documents, each represented as a dictionary with 'text' and 'source'.
+    """
     final_documents = []
 
-    if not os.path.isdir(data_path):
-        logging.error(f"{data_path} is not a valid directory.")
+    if not os.path.isdir(DATA_PATH):
         return []
 
     try:
-        for file in os.listdir(data_path):
-            file_path = os.path.join(data_path, file)
+        for file in os.listdir(DATA_PATH):
+            file_path = os.path.join(DATA_PATH, file)
 
             if file_path.endswith((".txt", ".md", ".pdf", ".docx", ".html")):
                 try:
@@ -33,21 +37,15 @@ def load_documents(data_path):
                         with open(file_path, "r", encoding="utf-8") as f:
                             text = f.read()
                         final_documents.append({"text": text, "source": file_path})
-                        logging.info(f"Loaded plain text file: {file_path}")
                         continue
-
                     documents = loader.load()
                     final_documents.extend(documents)
-                    logging.info(f"Loaded {len(documents)} document(s) from: {file_path}")
 
                 except Exception as load_err:
-                    logging.error(f"Failed to load {file_path}: {load_err}")
-
+                    raise CustomException(load_err, sys)
             else:
-                logging.warning(f"Skipping unsupported file type: {file_path}")
-
+                print(f"Skipping unsupported file type: {file_path}")
         return final_documents
-
     except Exception as e:
-        logging.error(f"Unexpected error while loading documents from {data_path}: {e}")
-        raise
+        raise CustomException(e,sys)
+    
